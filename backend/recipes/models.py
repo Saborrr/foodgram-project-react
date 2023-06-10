@@ -1,3 +1,4 @@
+from django.core.validators import MinValueValidator
 from django.db import models
 from users.models import User
 
@@ -11,11 +12,14 @@ CHOICES = ((RED, "красный"), (GREEN, "зелёный"), (BLUE, "голу�
 class Tag(models.Model):
     """Модель тэга."""
 
-    name = models.CharField("Тэг", max_length=200, unique=True, blank=False)
-    color = models.CharField(
-        "Цвет тэга", max_length=7, choices=CHOICES, unique=True, blank=False)
-    slug = models.SlugField(
-        "Slug тэга", max_length=200, unique=True, blank=False)
+    name = models.CharField(verbose_name="тэг", max_length=200, unique=True)
+    color = models.CharField(verbose_name="цвет тэга",
+                             max_length=7,
+                             choices=CHOICES,
+                             unique=True)
+    slug = models.SlugField(verbose_name="slug тэга",
+                            max_length=200,
+                            unique=True)
 
     class Meta:
         verbose_name = "тэг"
@@ -28,9 +32,9 @@ class Tag(models.Model):
 class Ingredient(models.Model):
     """Модель ингредиента."""
 
-    name = models.CharField("Название", max_length=200, blank=False)
-    measurement_unit = models.CharField(
-        "Единица измерения", max_length=200, blank=False)
+    name = models.CharField(verbose_name="название", max_length=200)
+    measurement_unit = models.CharField(verbose_name="единица измерения",
+                                        max_length=200)
 
     class Meta:
         verbose_name = "ингредиент"
@@ -47,9 +51,10 @@ class Recipe(models.Model):
                                on_delete=models.CASCADE,
                                related_name="recipe",
                                verbose_name="автор",)
-    name = models.CharField("Название рецепта", max_length=200, blank=False)
-    image = models.ImageField("Фото блюда", upload_to="recipes/", blank=False)
-    text = models.TextField("Текстовое описание", blank=False, null=True)
+    name = models.CharField(verbose_name="название рецепта", max_length=200)
+    image = models.ImageField(verbose_name="фото блюда",
+                              upload_to="media/recipes/")
+    text = models.TextField(verbose_name="текстовое описание")
     ingredients = models.ManyToManyField(Ingredient,
                                          through="AmountIngredient",
                                          verbose_name="ингредиенты")
@@ -57,9 +62,11 @@ class Recipe(models.Model):
                                   related_name="recipe",
                                   verbose_name="тэги")
     cooking_time = models.PositiveSmallIntegerField(
-        "Время приготовления в минутах", blank=False)
+        verbose_name="время приготовления в минутах",
+        validators=[MinValueValidator(
+            1, "Ой, время приготовления не может быть меньше 1 минуты")],)
     pub_date = models.DateTimeField(
-        "Дата публикации рецепта", auto_now_add=True)
+        verbose_name="дата публикации рецепта", auto_now_add=True)
 
     class Meta:
         verbose_name = "рецепт"
@@ -81,7 +88,10 @@ class AmountIngredient(models.Model):
                                    on_delete=models.CASCADE,
                                    related_name="ingredient",
                                    verbose_name="ингредиент",)
-    amount = models.PositiveSmallIntegerField("Количество", blank=False)
+    amount = models.PositiveSmallIntegerField(
+        verbose_name="количество",
+        validators=[MinValueValidator(
+            1, "Ой, ингредиентов не может быть меньше 1")],)
 
     class Meta:
         verbose_name = "количество ингредиента"

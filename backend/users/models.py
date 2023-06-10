@@ -9,12 +9,10 @@ class User(AbstractUser):
         "Электронная почта",
         max_length=254,
         unique=True,
-        blank=False,
         null=False,)
     username = models.CharField(
         max_length=150,
         unique=True,
-        blank=False,
         null=False)
     first_name = models.CharField(
         "Имя пользователя", max_length=150, blank=True)

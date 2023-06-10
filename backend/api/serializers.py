@@ -51,7 +51,6 @@ class AmountIngredientSerializer(serializers.ModelSerializer):
 
 class AddAmountIngredientSerializer(serializers.ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
-    amount = serializers.IntegerField()
 
     class Meta:
         model = AmountIngredient
@@ -93,7 +92,7 @@ class RecipesCreateSerializer(serializers.ModelSerializer):
         fields = "__all__"
         read_only_fields = ("author",)
 
-    def validate(self, data):
+    def validate_ingredients_and_tags(self, data):
         ingredients = data["ingredients"]
         unique_set = set()
         for ingredient_data in ingredients:
@@ -103,14 +102,27 @@ class RecipesCreateSerializer(serializers.ModelSerializer):
                     "В списке ингредиентов - два одинаковых значения."
                     "Проверьте состав.")
             unique_set.add(current_ingredient)
+        tags = data['tags']
+        if not tags:
+            raise serializers.ValidationError(
+                'Нужно выбрать хотя бы один тэг!')
+        tags_list = []
+        for tag in tags:
+            if tag in tags_list:
+                raise serializers.ValidationError(
+                    'Тэги должны быть уникальными!')
+            tags_list.append(tag)
         return data
 
     def create_amount_ingredients(self, ingredients, recipe):
+        ingredients_result = []
         for ingredient in ingredients:
-            AmountIngredient.objects.create(
+            obj = AmountIngredient(
                 recipe=recipe,
-                ingredient=ingredient.get("id"),
+                ingredient=ingredient.get["id"],
                 amount=ingredient.get("amount"),)
+            ingredients_result.append(obj)
+        AmountIngredient.objects.bulk_create(ingredients_result)
 
     def create(self, validated_data):
         ingredients = validated_data.pop("ingredients")
@@ -131,8 +143,9 @@ class RecipesCreateSerializer(serializers.ModelSerializer):
         return super().update(obj, validated_data)
 
     def to_representation(self, instance):
-        serializer = RecipesListSerializer(instance)
-        return serializer.data
+        request = self.context.get('request')
+        context = {'request': request}
+        return RecipesListSerializer(instance, context=context).data
 
 
 class FavoriteOrShoppingRecipeSerializer(serializers.ModelSerializer):
@@ -170,8 +183,11 @@ class FollowSerializer(serializers.ModelSerializer):
         return Follow.objects.filter(user=obj.user, author=obj.author).exists()
 
     def get_recipes(self, obj):
-        queryset = Recipe.objects.filter(author=obj.author).order_by(
-            "-pub_date")
+        request = self.context.get("request")
+        limit = request.GET.get("recipes_limit")
+        queryset = Recipe.objects.filter(author=obj.author)
+        if limit:
+            queryset = queryset[:int(limit)]
         return FavoriteOrShoppingRecipeSerializer(queryset, many=True).data
 
     def get_recipes_count(self, obj):
