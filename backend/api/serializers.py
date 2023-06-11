@@ -92,7 +92,7 @@ class RecipesCreateSerializer(serializers.ModelSerializer):
         fields = "__all__"
         read_only_fields = ("author",)
 
-    def validate_ingredients_and_tags(self, data):
+    def validate_ingredients(self, data):
         ingredients = data["ingredients"]
         unique_set = set()
         for ingredient_data in ingredients:
@@ -102,6 +102,9 @@ class RecipesCreateSerializer(serializers.ModelSerializer):
                     "В списке ингредиентов - два одинаковых значения."
                     "Проверьте состав.")
             unique_set.add(current_ingredient)
+        return data
+
+    def validate_tags(self, data):
         tags = data['tags']
         if not tags:
             raise serializers.ValidationError(
