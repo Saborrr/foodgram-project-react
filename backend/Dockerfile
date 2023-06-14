@@ -1,6 +1,6 @@
 FROM python:3.9.10-slim
 
-LABEL author='Saborrr' version=1.0 broken_keyboards=2
+LABEL author='Saborrr' version=1.0 broken_keyboards=13
 
 WORKDIR /app
 
