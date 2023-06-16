@@ -25,7 +25,7 @@ mypy-extensions==1.0.0
 oauthlib==3.2.2
 Pillow==9.5.0
 platformdirs==3.5.1
-psycopg2-binary==2.8.6
+psycopg2-binary==2.9.6
 pycparser==2.21
 PyJWT==2.7.0
 python-dotenv==1.0.0
