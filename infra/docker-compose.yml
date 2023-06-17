@@ -23,9 +23,11 @@ services:
       image: saborrr/frontend:v1.0
       volumes:
         - ../frontend/:/app/result_build/
+      depends_on:
+      - backend
 
     nginx:
-      image: nginx:1.19.3
+      image: nginx:1.24.0
       ports:
         - "80:80"
         - "443:443"
