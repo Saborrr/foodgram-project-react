@@ -62,8 +62,6 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            sudo apt update
-            sudo apt upgrade -y
             sudo mkdir infra -p
             cd infra/
             sudo systemctl stop nginx
