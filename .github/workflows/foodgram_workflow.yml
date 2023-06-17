@@ -62,7 +62,6 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            sudo mkdir infra -p
             cd infra/
             sudo systemctl stop nginx
             sudo docker compose stop
