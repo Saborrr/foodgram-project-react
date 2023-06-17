@@ -1,7 +1,7 @@
-version: '3.8'
+version: '3.3'
 services:
     db:
-      image: postgres:15.3
+      image: postgres:13.0-alpine
       volumes:
         - db_value:/var/lib/postgresql/data/
       env_file:
@@ -27,7 +27,7 @@ services:
       - backend
 
     nginx:
-      image: nginx:1.24.0
+      image: nginx:1.19.3
       ports:
         - "80:80"
         - "443:443"
