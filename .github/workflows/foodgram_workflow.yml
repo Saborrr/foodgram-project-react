@@ -62,7 +62,7 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            cd infra
+            cd infra/
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:v1.0
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/frontend:v1.0
             sudo docker compose stop
