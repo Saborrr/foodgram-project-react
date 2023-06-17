@@ -10,7 +10,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: 3.9
+        python-version: 3.9.10
     - name: Install dependencies
       run: | 
         python -m pip install --upgrade pip 
@@ -40,14 +40,14 @@ jobs:
       - name: Push to Docker Hub Backend
         uses: docker/build-push-action@v2 
         with:
-          context: backend/
+          context: ./backend
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:v1.0
 
       - name: Push to Docker Hub Frontend
         uses: docker/build-push-action@v2 
         with:
-          context: frontend/
+          context: ./frontend
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/frontend:v1.0
 
@@ -62,13 +62,18 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
+            sudo apt update
+            sudo apt upgrade -y
+            sudo mkdir infra -p
             cd infra/
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:v1.0
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/frontend:v1.0
+            sudo systemctl stop nginx
             sudo docker compose stop
             sudo docker compose rm backend
+            sudo docker system prune -af
             sudo rm .env
             touch .env
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:v1.0
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/frontend:v1.0
             echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
             echo DB_NAME=${{ secrets.DB_NAME }} >> .env
             echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env

@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.3'
 services:
     db:
       image: postgres:13.0-alpine
@@ -13,6 +13,8 @@ services:
       volumes:
         - static_value:/app/static/
         - media_value:/app/media/
+      ports:
+        - "8000:8000"
       depends_on:
         - db
       env_file:
@@ -23,10 +25,10 @@ services:
       volumes:
         - ../frontend/:/app/result_build/
       depends_on:
-      - backend
+        - backend
 
     nginx:
-      image: nginx:1.18
+      image: nginx:1.19.3
       ports:
         - "80:80"
       volumes:
