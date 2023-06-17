@@ -26,7 +26,7 @@ services:
       - backend
 
     nginx:
-      image: nginx:1.24
+      image: nginx:1.19.3
       ports:
         - "80:80"
       volumes:
@@ -36,7 +36,7 @@ services:
         - static_value:/var/html/static/
         - media_value:/var/html/media/
       depends_on:
-        - frontend
+        - backend
 
 volumes:
   db_value:
