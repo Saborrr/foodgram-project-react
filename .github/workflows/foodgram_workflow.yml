@@ -62,11 +62,11 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:v1.0
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/frontend:v1.0
+            cd infra/
             sudo docker compose stop
             sudo docker compose rm backend
-            cd infra/
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:v1.0
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/frontend:v1.0
             sudo rm .env
             touch .env
             echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
