@@ -5,9 +5,9 @@
 
 Проект развернут по адресу: [84.201.164.176](http://84.201.164.176)
 
-Логин: admin
-email: admin@admin.ru
-Пароль: admin
+- Логин: admin
+- Email: admin@admin.ru
+- Пароль: admin
 
 Документация к API [тут](http://84.201.164.176/api/docs/)
 
@@ -44,11 +44,6 @@ sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-
 sudo chmod +x /usr/local/bin/docker-compose
 ```
 
-Создайте папку infra:
-
-```
-mkdir infra
-```
 - Перенести файлы docker-compose.yml и default.conf на сервер.
 
 ```
