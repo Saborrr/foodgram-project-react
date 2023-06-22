@@ -8,14 +8,19 @@ class TagSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tag
-        fields = ("id", "name", "color", "slug",)
+        fields = ("id",
+                  "name",
+                  "color",
+                  "slug",)
 
 
 class IngredientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Ingredient
-        fields = ("id", "name", "measurement_unit")
+        fields = ("id",
+                  "name",
+                  "measurement_unit",)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -46,7 +51,10 @@ class AmountIngredientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AmountIngredient
-        fields = ("id", "name", "measurement_unit", "amount",)
+        fields = ("id",
+                  "name",
+                  "measurement_unit",
+                  "amount",)
 
 
 class AddAmountIngredientSerializer(serializers.ModelSerializer):
@@ -54,7 +62,8 @@ class AddAmountIngredientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AmountIngredient
-        fields = ("id", "amount",)
+        fields = ("id",
+                  "amount",)
 
 
 class RecipesListSerializer(serializers.ModelSerializer):
