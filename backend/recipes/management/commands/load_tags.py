@@ -3,15 +3,15 @@ from recipes.models import Tag
 
 
 class Command(BaseCommand):
-    help = "Loads tags"
+    help = "Загрузка тэгов"
 
     def handle(self, *args, **kwargs):
         data = [
-            {"name": "завтрак", "color": "#E26C2D", "slug": "breakfast"},
-            {"name": "обед", "color": "#49B64E", "slug": "dinner"},
-            {"name": "ужин", "color": "#8775D2", "slug": "supper"},
+            {"name": "завтрак", "color": "#48e22d", "slug": "breakfast"},
+            {"name": "обед", "color": "#2da3e2", "slug": "dinner"},
+            {"name": "ужин", "color": "#c72de2", "slug": "supper"},
         ]
         Tag.objects.bulk_create(Tag(**tag) for tag in data)
         self.stdout.write(
-            self.style.SUCCESS("***Tags were succesfully loaded***")
+            self.style.SUCCESS("***Тэги успешно загружены***")
         )

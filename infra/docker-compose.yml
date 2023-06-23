@@ -13,6 +13,7 @@ services:
       volumes:
         - static_value:/app/static/
         - media_value:/app/media/
+        - redoc:/app/docs/
       depends_on:
         - db
       env_file:
@@ -26,7 +27,8 @@ services:
         - backend
 
     nginx:
-      image: nginx:1.21.3-alpine
+      image: nginx:1.21.3
+      restart: always
       ports:
         - "80:80"
       volumes:
@@ -35,6 +37,7 @@ services:
         - ../docs/:/usr/share/nginx/html/api/docs/
         - static_value:/var/html/static/
         - media_value:/var/html/media/
+        - redoc:/usr/share/nginx/html/docs/
       depends_on:
         - backend
 
@@ -42,3 +45,4 @@ volumes:
   db_value:
   static_value:
   media_value:
+  redoc:
