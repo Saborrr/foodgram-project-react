@@ -1,3 +1,4 @@
+from djoser.serializers import UserCreateSerializer
 from drf_base64.fields import Base64ImageField
 from recipes.models import AmountIngredient, Ingredient, Recipe, Tag
 from rest_framework import serializers
@@ -21,6 +22,13 @@ class IngredientSerializer(serializers.ModelSerializer):
         fields = ("id",
                   "name",
                   "measurement_unit",)
+
+
+class UserWithPasswordCreateSerializer(UserCreateSerializer):
+    class Meta:
+        model = User
+        fields = tuple(User.REQUIRED_FIELDS) + (User.USERNAME_FIELD,
+                                                'password',)
 
 
 class UserSerializer(serializers.ModelSerializer):
