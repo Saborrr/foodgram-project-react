@@ -57,6 +57,7 @@ class Recipe(models.Model):
     text = models.TextField(verbose_name="текстовое описание")
     ingredients = models.ManyToManyField(Ingredient,
                                          through="AmountIngredient",
+                                         related_name="recipe",
                                          verbose_name="ингредиенты")
     tags = models.ManyToManyField(Tag,
                                   related_name="recipe",
