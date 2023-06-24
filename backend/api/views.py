@@ -1,7 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.db.models import Sum
 from django.db.models.expressions import Exists, OuterRef
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
 from recipes.models import (AmountIngredient, FavoriteRecipe, Ingredient,
@@ -10,6 +9,7 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import SAFE_METHODS, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.status import HTTP_400_BAD_REQUEST
 from users.models import Follow, User
 
 from .filters import IngredientFilter, RecipeFilter
@@ -17,6 +17,7 @@ from .permissions import IsOwnerOrReadOnly
 from .serializers import (FavoriteOrShoppingRecipeSerializer, FollowSerializer,
                           IngredientSerializer, RecipesCreateSerializer,
                           RecipesListSerializer, TagSerializer, UserSerializer)
+from .utils import export_ingredients
 
 
 class TagsViewSet(viewsets.ReadOnlyModelViewSet):
@@ -152,24 +153,13 @@ class RecipesViewSet(viewsets.ModelViewSet):
     @action(methods=["GET"], detail=False,
             permission_classes=(IsAuthenticated,))
     def download_shopping_cart(self, request):
-        ingredients = AmountIngredient.objects.select_related(
-            "recipe",
-            "ingredient")
-        ingredients = ingredients.filter(
-            recipe__shopping_cart_recipe__user=request.user)
-        ingredients = ingredients.values("ingredient__name",
-                                         "ingredient__measurement_unit")
-        ingredients = ingredients.annotate(ingredient_total=Sum("amount"))
-        ingredients = ingredients.order_by("ingredient__name")
-        shopping_list = "Список покупок: \n"
-        for ingredient in ingredients:
-            shopping_list += (
-                f'{ingredient["ingredient__name"]} - '
-                f'{ingredient["ingredient_total"]} '
-                f'({ingredient["ingredient__measurement_unit"]}) \n')
-            response = HttpResponse(shopping_list,
-                                    content_type="text/plain; charset=utf8")
-            response[
-                "Content-Disposition"
-            ] = 'attachment; filename="shopping_list.txt"'
-        return response
+        user = request.user
+        if not user.shopping_cart.exists():
+            return Response(status=HTTP_400_BAD_REQUEST)
+        ingredients = AmountIngredient.objects.filter(
+            recipe__shopping_cart__user=request.user
+        ).values(
+            'ingredient__name',
+            'ingredient__measurement_unit'
+        ).annotate(amount=Sum('amount'))
+        return export_ingredients(self, request, ingredients)

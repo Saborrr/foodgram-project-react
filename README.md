@@ -1,15 +1,16 @@
 # Проект "Продуктовый помощник (Foodgram)"
 
+![Пример workflow](https://github.com/saborrr/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg?event=push)
+
 ## Описание проекта
-Проект «Продуктовый помощник»: это приложение, в котором пользователи публикуют рецепты, могут подписываться на публикации других авторов и добавлять рецепты в избранное. Сервис «Список покупок» позволит пользователю создавать список продуктов, которые нужно купить для приготовления выбранных блюд.
+- Проект «Продуктовый помощник»: это приложение, в котором пользователи могут публиковать рецепты, подписываться на публикации других авторов и добавлять рецепты в избранное. 
+- Сервис «Список покупок» позволит пользователю создавать список продуктов, которые нужно купить для приготовления выбранных блюд.
 
 Проект развернут по адресу: [84.201.164.176](http://84.201.164.176)
 
 - Логин: admin
 - Email: admin@admin.ru
 - Пароль: admin
-
-Документация к API [тут](http://84.201.164.176/api/docs/)
 
 ## Использованные технологии:
 
@@ -86,10 +87,8 @@ sudo docker compose exec backend python manage.py collectstatic --no-input
 Дополнительно можно наполнить базу данных ингредиентами и тэгами:
 
 ```
-sudo docker-compose exec backend python manage.py load_tags
+sudo docker compose exec backend python manage.py load_tags
 ```
 ```
-sudo docker-compose exec backend python manage.py load_ingredients
+sudo docker compose exec backend python manage.py load_ingredients
 ```
-
-![Пример workflow](https://github.com/saborrr/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg?event=push)
