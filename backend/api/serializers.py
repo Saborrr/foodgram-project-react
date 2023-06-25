@@ -121,22 +121,33 @@ class RecipesCreateSerializer(serializers.ModelSerializer):
         return tags
 
     def create_amount_ingredients(self, ingredients, recipe):
-        ingredients_result = []
-        for ingredient in ingredients:
-            obj = AmountIngredient(
-                recipe=recipe,
-                ingredient=ingredient.get["id"],
-                amount=ingredient.get("amount"),)
-            ingredients_result.append(obj)
-        AmountIngredient.objects.bulk_create(ingredients_result)
+        AmountIngredient.objects.bulk_create([AmountIngredient(
+            ingredient=ingredient.get('id'),
+            recipe=recipe,
+            amount=ingredient.get('amount'),) for ingredient in ingredients])
+
+    # def create_amount_ingredients(self, ingredients, recipe):
+    #    ingredients_result = []
+    #    for ingredient in ingredients:
+    #        obj = AmountIngredient(
+    #            recipe=recipe,
+    #            ingredient=ingredient.get["id"],
+    #            amount=ingredient.get("amount"),)
+    #        ingredients_result.append(obj)
+    #    AmountIngredient.objects.bulk_create(ingredients_result)
 
     def create(self, validated_data):
-        ingredients = validated_data.pop("ingredients")
         tags = validated_data.pop("tags")
-        recipe = super().create(validated_data)
+        ingredients = validated_data.pop("ingredients")
+        user = self.context.get("request").user
+        recipe = Recipe.objects.create(author=user, **validated_data)
         recipe.tags.set(tags)
         self.create_amount_ingredients(ingredients, recipe)
         return recipe
+        # recipe = super().create(validated_data)
+        # recipe.tags.set(tags)
+        # self.create_amount_ingredients(ingredients, recipe)
+        # return recipe
 
     def update(self, obj, validated_data):
         if "ingredients" in validated_data:
