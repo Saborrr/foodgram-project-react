@@ -1,33 +1,42 @@
 from django_filters.rest_framework import FilterSet, filters
-from recipes.models import Ingredient, Recipe
+from recipes.models import Recipe, Tag
+from rest_framework.filters import SearchFilter
 
 
 class RecipeFilter(FilterSet):
-    author = filters.AllValuesFilter(field_name="author")
-    tags = filters.AllValuesMultipleFilter(field_name="tags__slug")
-    is_favorited = filters.BooleanFilter(method="get_is_favorited")
+    """Класс для фильтрации обьектов Recipes."""
+
+    tags = filters.ModelMultipleChoiceFilter(
+        field_name='tags__slug',
+        to_field_name='slug',
+        queryset=Tag.objects.all(),)
+
+    is_favorited = filters.BooleanFilter(method='is_favorited_filter')
     is_in_shopping_cart = filters.BooleanFilter(
-        method="get_is_in_shopping_cart")
+        method='is_in_shopping_cart_filter')
 
     class Meta:
         model = Recipe
-        fields = ("author", "tags", "is_favorited", "is_in_shopping_cart",)
+        fields = (
+            'tags',
+            'author',
+            'is_favorited',
+            'is_in_shopping_cart',)
 
-    def get_is_favorited(self, queryset, name, data):
-        if data and not self.request.user.is_anonymous:
-            return queryset.filter(favorite_recipe__user=self.request.user)
+    def is_favorited_filter(self, queryset, name, data):
+        user = self.request.user
+        if data and user.is_authenticated:
+            return queryset.filter(favorite_recipes__user=user)
         return queryset
 
-    def get_is_in_shopping_cart(self, queryset, name, data):
-        if data and not self.request.user.is_anonymous:
-            return queryset.filter(
-                shopping_cart_recipe__user=self.request.user)
+    def is_in_shopping_cart_filter(self, queryset, name, data):
+        user = self.request.user
+        if data and user.is_authenticated:
+            return queryset.filter(shopping_recipes__user=user)
         return queryset
 
 
-class IngredientFilter(FilterSet):
-    name = filters.CharFilter(lookup_expr="istartswith")
+class IngredientFilter(SearchFilter):
+    """Класс для фильтрации обьектов Tags."""
 
-    class Meta:
-        model = Ingredient
-        fields = ("name",)
+    search_param = 'name'

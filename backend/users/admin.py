@@ -1,13 +1,22 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
 
 from .models import Follow, User
 
 
 @admin.register(User)
-class MyUserAdmin(UserAdmin):
-    search_fields = ("username", "email", "first_name", "last_name",)
-    list_filter = ("email", "first_name",)
+class UserAdmin(admin.ModelAdmin):
+    """Отображение и фильтр полей User в админке."""
+
+    list_display = ('id', 'username', 'first_name', 'last_name', 'email', )
+    search_fields = ('username', 'email', )
+    list_filter = ('first_name', 'email', )
+    list_display_links = ('username', )
 
 
-admin.site.register(Follow)
+@admin.register(Follow)
+class FollowAdmin(admin.ModelAdmin):
+    """Отображение, фильтра, поиска полей Follow в админке."""
+
+    list_display = ('user', 'author')
+    list_filter = ('user', 'author')
+    search_fields = ('user', 'author')

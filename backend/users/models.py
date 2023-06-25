@@ -11,16 +11,27 @@ class User(AbstractUser):
         unique=True,
         null=False,)
     username = models.CharField(
+        "Юзернэйм",
         max_length=150,
         unique=True,
         null=False)
     first_name = models.CharField(
-        "Имя пользователя", max_length=150, blank=True)
+        "Имя пользователя",
+        max_length=150,
+        blank=True)
     last_name = models.CharField(
-        "Фамилия пользователя", max_length=150, blank=True)
+        "Фамилия пользователя",
+        max_length=150,
+        blank=True)
+    password = models.CharField(
+        "Пароль",
+        max_length=150,
+        blank=False,
+        null=False
+    )
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["username", "first_name", "last_name"]
+    REQUIRED_FIELDS = ("username", "first_name", "last_name",)
 
     class Meta:
         verbose_name = "пользователь"
@@ -47,7 +58,7 @@ class Follow(models.Model):
     class Meta:
         verbose_name = "подписка"
         verbose_name_plural = "подписки"
-        constraints = [
-            models.UniqueConstraint(
-                fields=["user", "author"],
-                name="unique_subscription",)]
+        ordering = ('user',)
+        constraints = [models.UniqueConstraint(
+            fields=['user', 'author'],
+            name='unique_follow')]
