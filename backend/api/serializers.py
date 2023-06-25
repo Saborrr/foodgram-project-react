@@ -94,8 +94,14 @@ class RecipesCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = "__all__"
-        read_only_fields = ("author",)
+        fields = ("id",
+                  "tags",
+                  "author",
+                  "ingredients",
+                  "name",
+                  "image",
+                  "text",
+                  "cooking_time",)
 
     def validate_ingredients(self, ingredients):
         unique_set = set()
@@ -121,33 +127,22 @@ class RecipesCreateSerializer(serializers.ModelSerializer):
         return tags
 
     def create_amount_ingredients(self, ingredients, recipe):
-        AmountIngredient.objects.bulk_create([AmountIngredient(
-            ingredient=ingredient.get('id'),
-            recipe=recipe,
-            amount=ingredient.get('amount'),) for ingredient in ingredients])
-
-    # def create_amount_ingredients(self, ingredients, recipe):
-    #    ingredients_result = []
-    #    for ingredient in ingredients:
-    #        obj = AmountIngredient(
-    #            recipe=recipe,
-    #            ingredient=ingredient.get["id"],
-    #            amount=ingredient.get("amount"),)
-    #        ingredients_result.append(obj)
-    #    AmountIngredient.objects.bulk_create(ingredients_result)
+        ingredients_result = []
+        for ingredient in ingredients:
+            obj = AmountIngredient(
+                recipe=recipe,
+                ingredient=ingredient.get["id"],
+                amount=ingredient.get("amount"),)
+            ingredients_result.append(obj)
+        AmountIngredient.objects.bulk_create(ingredients_result)
 
     def create(self, validated_data):
-        tags = validated_data.pop("tags")
         ingredients = validated_data.pop("ingredients")
-        user = self.context.get("request").user
-        recipe = Recipe.objects.create(author=user, **validated_data)
+        tags = validated_data.pop("tags")
+        recipe = super.create(validated_data)
         recipe.tags.set(tags)
         self.create_amount_ingredients(ingredients, recipe)
         return recipe
-        # recipe = super().create(validated_data)
-        # recipe.tags.set(tags)
-        # self.create_amount_ingredients(ingredients, recipe)
-        # return recipe
 
     def update(self, obj, validated_data):
         if "ingredients" in validated_data:
