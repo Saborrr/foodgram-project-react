@@ -280,8 +280,8 @@ class RecipesWriteSerializer(ModelSerializer):
 
     def update(self, instance, validated_data):
         request = self.context.get('request')
-        if request.user.is_authenticated and \
-           request.user.id == instance.author_id:
+        req_usr_auth = request.user.is_authenticated
+        if req_usr_auth and request.user.id == instance.author_id:
             tags = validated_data.pop('tags')
             instance.tags.clear()
             instance.tags.set(tags)
