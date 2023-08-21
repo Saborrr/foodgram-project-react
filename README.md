@@ -8,7 +8,7 @@
 
 <details>
   <summary>Фото проекта</summary>
-  <img src="https://ibb.co/D1fW2Kd" name="Пример изображения">
+  <img src="./docs/Foto.PNG" name="Пример изображения">
 </details>
 
 ## Использованные технологии:
@@ -96,11 +96,9 @@ sudo docker compose exec backend python manage.py load_ingredient_csv
 - Отправка уведомления в телеграм-чат
 
 Проект развернут по адресу: [84.201.164.176](http://84.201.164.176)
-
 - Логин: admin
 - Email: admin@admin.ru
 - Пароль: admin
 
 <h3> Автор проекта</h3>
-
 [Александр Санычев](https://github.com/Saborrr)
