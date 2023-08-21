@@ -8,7 +8,7 @@
 
 <details>
   <summary>Фото проекта</summary>
-  <img src="https://ibb.co/D1fW2Kd" name="Пример изображения">
+  ![11111](https://github.com/Saborrr/foodgram-project-react/assets/29379558/5474fa5c-377e-4e11-835f-26731c0ca8ba)
 </details>
 
 ## Использованные технологии:
