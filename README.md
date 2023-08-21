@@ -100,5 +100,6 @@ sudo docker compose exec backend python manage.py load_ingredient_csv
 - Email: admin@admin.ru
 - Пароль: admin
 
-<h3> Автор проекта</h3>
+<h3> Автор проекта:</h3> 
+
 [Александр Санычев](https://github.com/Saborrr)
