@@ -6,11 +6,10 @@
 - Проект «Продуктовый помощник»: это приложение, в котором пользователи могут публиковать рецепты, подписываться на публикации других авторов и добавлять рецепты в избранное. 
 - Сервис «Список покупок» позволит пользователю создавать список продуктов, которые нужно купить для приготовления выбранных блюд.
 
-Проект развернут по адресу: [84.201.164.176](http://84.201.164.176)
-
-- Логин: admin
-- Email: admin@admin.ru
-- Пароль: admin
+<details>
+  <summary>Фото проекта</summary>
+  <img src="https://ibb.co/D1fW2Kd" name="Пример изображения">
+</details>
 
 ## Использованные технологии:
 
@@ -53,23 +52,23 @@ scp docker-compose.yml username@server_ip:/home/<username>/
 ```
 scp default.conf <username>@<server_ip>:/home/<username>/
 ```
-- Создайте файл .env в дериктории infra:
+- Создать файл .env в дериктории infra:
 
 ```
 touch .env
 ```
-- Заполните в настройках своего репозитория secrets:
+- Заполнить в настройках своего репозитория secrets:
 
 ```python
-DB_ENGINE=<ваша база данных>
+DB_ENGINE=<указываем тип БД default='django.db.backends.postgresql'>
 DB_NAME=<имя базы данных>
-POSTGRES_USER=<имя пользователя>
-POSTGRES_PASSWORD=<пароль>
-DB_HOST=<хост>
-DB_PORT=<порт>
+POSTGRES_USER=<логин для подключения к базе данных>
+POSTGRES_PASSWORD=<пароль для подключения к БД (установите свой)>
+DB_HOST=<название сервиса (контейнера)>
+DB_PORT=<порт для подключения к БД>
 ```
 
-Для доступа к контейнеру выполните следующие команды:
+Для доступа к контейнеру выполнить следующие команды:
 
 ```
 sudo docker compose exec backend python manage.py makemigrations
@@ -84,11 +83,24 @@ sudo docker compose exec backend python manage.py createsuperuser
 sudo docker compose exec backend python manage.py collectstatic --no-input
 ```
 
-Дополнительно можно наполнить базу данных ингредиентами и тэгами:
+Дополнительно можно наполнить базу данных ингредиентами:
 
 ```
-sudo docker compose exec backend python manage.py load_tags
+sudo docker compose exec backend python manage.py load_ingredient_csv
 ```
-```
-sudo docker compose exec backend python manage.py load_ingredients
-```
+
+### Настроен Workflow, который состоит из четырех шагов:
+- Проверка кода на соответствие PEP8
+- Сборка и публикация образа бекенда на DockerHub
+- Автоматический деплой на удаленный сервер
+- Отправка уведомления в телеграм-чат
+
+Проект развернут по адресу: [84.201.164.176](http://84.201.164.176)
+
+- Логин: admin
+- Email: admin@admin.ru
+- Пароль: admin
+
+<h3> Автор проекта</h3>
+
+[Александр Санычев](https://github.com/Saborrr)
